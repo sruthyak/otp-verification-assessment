@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "OTP Verification";
+}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4>OTP Verification</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label class="control-label">Full Name</label>
+                        <input class="form-control" id="txtFullName" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="control-label">Email</label>
+                        <input class="form-control" id="txtEmail" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="control-label">Country Code</label>
+                        <input class="form-control" id="txtCountryCode" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="control-label">Phone Number</label>
+                        <input class="form-control" id="txtPhNo" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <input type="button" value="Generate OTP" class="btn btn-primary w-100" id="btnGenerateOtp" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="control-label">Enter Generated OTP</label>
+                        <input class="form-control" id="txtGeneratedOtp" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <input type="button" value="Verify OTP" class="btn btn-success w-100" id="btnVerifyOtp" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" ></script>
+<script>
+$(document).ready(function (){
+        $('#btnGenerateOtp').on('click', function(e){
+                 if (!validateForm()) return;
+                var fullName=$('#txtFullName').val();
+                var emailId=$('#txtEmail').val();
+                var url="/api/OtpApi/GenerateOtp/?fullName="+encodeURIComponent(fullName)+"&emailId="+encodeURIComponent(emailId);
+                       
+                $.ajax({
+                            url:url ,
+                            data: {
+                                fullName: fullName,
+                                emailId: emailId
+                            },
+                            dataType: "json",
+                            method: "POST",
+                            cache: false,
+                            success: function(responseOtp){
+                                        alert(responseOtp);
+                                        console.log(responseOtp);
+                                        localStorage.setItem("otpGenerated", responseOtp);
+                            }         
+                });
+                   
+        });
+
+        $('#btnVerifyOtp').on('click', function(e){
+        var otpGenerated= localStorage.getItem("otpGenerated");
+        var otp= $('#txtGeneratedOtp').val();
+                if(otpGenerated==otp){
+                        alert("OTP Verified Successfully")
+                }
+                else{
+                        alert("Invalid OTP");
+                }
+    });
+    function isEmailValid(email) {
+        var regex = new RegExp(/^[+a-zA-Z0-9._-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+        return regex.test(email);
+    }
+
+function isNumeric(value) {
+    return /^\d+$/.test(value);
+}
+
+function validateForm() {
+    var fullName = $('#txtFullName').val().trim();
+    var email = $('#txtEmail').val().trim();
+    var countryCode = $('#txtCountryCode').val().trim();
+    var phone = $('#txtPhNo').val().trim();
+
+    if (!fullName || !email || !countryCode || !phone) {
+        alert("All fields are required.");
+        return false;
+    }
+
+    if (!isEmailValid(email)) {
+        alert("Please enter a valid email address.");
+        return false;
+    }
+
+    if (!isNumeric(countryCode) || !isNumeric(phone)) {
+        alert("Country Code and Phone Number must be numeric.");
+        return false;
+    }
+
+    return true;
+}
+
+});
+</script>
