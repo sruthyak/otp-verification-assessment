@@ -1,3 +1,5 @@
+using BinghattiOtpVerificationAssessment.Models;
+
 namespace BinghattiOtpVerificationAssessment
 {
     public class Program
@@ -8,6 +10,15 @@ namespace BinghattiOtpVerificationAssessment
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
 
             var app = builder.Build();
 
@@ -25,6 +36,8 @@ namespace BinghattiOtpVerificationAssessment
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",

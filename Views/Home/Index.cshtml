@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "OTP Verification";
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -10,30 +11,42 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group mb-3">
-                        <label class="control-label">Full Name</label>
+                        <label class="control-label">Full Name<span class="text-danger">*</span></label>
                         <input class="form-control" id="txtFullName" />
+                        <div id="errorFullName" class="text-danger small"></div>
                     </div>
                     <div class="form-group mb-3">
-                        <label class="control-label">Email</label>
+                        <label class="control-label">Email<span class="text-danger">*</span></label>
                         <input class="form-control" id="txtEmail" />
+                        <div id="errorEmail" class="text-danger small"></div>
                     </div>
                     <div class="form-group mb-3">
-                        <label class="control-label">Country Code</label>
+                        <label class="control-label">Country Code<span class="text-danger">*</span></label>
                         <input class="form-control" id="txtCountryCode" />
+                        <div id="errorCountryCode" class="text-danger small"></div>
                     </div>
                     <div class="form-group mb-3">
-                        <label class="control-label">Phone Number</label>
+                        <label class="control-label">Phone Number<span class="text-danger">*</span></label>
                         <input class="form-control" id="txtPhNo" />
+                        <div id="errorPhone" class="text-danger small"></div>
                     </div>
-                    <div class="form-group mb-3">
-                        <input type="button" value="Generate OTP" class="btn btn-primary w-100" id="btnGenerateOtp" />
+                    <div class="form-group mb-3 d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-primary w-100 d-flex justify-content-center align-items-center" id="btnGenerateOtp">
+                            <span id="btnText">Generate OTP</span>
+                            <span id="otpLoading" class="ms-2" style="display:none;">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </span>
+                        </button>
                     </div>
-                    <div class="form-group mb-3">
-                        <label class="control-label">Enter Generated OTP</label>
-                        <input class="form-control" id="txtGeneratedOtp" />
-                    </div>
-                    <div class="form-group mb-3">
-                        <input type="button" value="Verify OTP" class="btn btn-success w-100" id="btnVerifyOtp" />
+
+                    <div id="otpVerificationSection" style="display: none;">
+                        <div class="form-group mb-3">
+                            <label class="control-label">Enter OTP<span class="text-danger">*</span></label>
+                            <input class="form-control" id="txtGeneratedOtp" />
+                        </div>
+                        <div class="form-group mb-3">
+                            <input type="button" value="Verify OTP" class="btn btn-success w-100" id="btnVerifyOtp" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -41,75 +54,25 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title" id="otpModalLabel">OTP Notification</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center fs-6" id="otpModalBody">
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <script src="https://code.jquery.com/jquery-3.7.1.js" ></script>
-<script>
-$(document).ready(function (){
-        $('#btnGenerateOtp').on('click', function(e){
-                 if (!validateForm()) return;
-                var fullName=$('#txtFullName').val();
-                var emailId=$('#txtEmail').val();
-                var url="/api/OtpApi/GenerateOtp/?fullName="+encodeURIComponent(fullName)+"&emailId="+encodeURIComponent(emailId);
-                       
-                $.ajax({
-                            url:url ,
-                            data: {
-                                fullName: fullName,
-                                emailId: emailId
-                            },
-                            dataType: "json",
-                            method: "POST",
-                            cache: false,
-                            success: function(responseOtp){
-                                        alert(responseOtp);
-                                        console.log(responseOtp);
-                                        localStorage.setItem("otpGenerated", responseOtp);
-                            }         
-                });
-                   
-        });
-
-        $('#btnVerifyOtp').on('click', function(e){
-        var otpGenerated= localStorage.getItem("otpGenerated");
-        var otp= $('#txtGeneratedOtp').val();
-                if(otpGenerated==otp){
-                        alert("OTP Verified Successfully")
-                }
-                else{
-                        alert("Invalid OTP");
-                }
-    });
-    function isEmailValid(email) {
-        var regex = new RegExp(/^[+a-zA-Z0-9._-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
-        return regex.test(email);
-    }
-
-function isNumeric(value) {
-    return /^\d+$/.test(value);
-}
-
-function validateForm() {
-    var fullName = $('#txtFullName').val().trim();
-    var email = $('#txtEmail').val().trim();
-    var countryCode = $('#txtCountryCode').val().trim();
-    var phone = $('#txtPhNo').val().trim();
-
-    if (!fullName || !email || !countryCode || !phone) {
-        alert("All fields are required.");
-        return false;
-    }
-
-    if (!isEmailValid(email)) {
-        alert("Please enter a valid email address.");
-        return false;
-    }
-
-    if (!isNumeric(countryCode) || !isNumeric(phone)) {
-        alert("Country Code and Phone Number must be numeric.");
-        return false;
-    }
-
-    return true;
-}
-
-});
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js"></script>

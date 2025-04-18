@@ -1,45 +1,83 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-    margin-bottom: 60px;
     background: #f0f4f8;
+    margin-bottom: 60px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
 .card {
-    border-radius: 10px;
+    border-radius: 12px;
     background-color: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .card-header {
-    background-color: #007bff;
+    background-color: #5492ed !important;
     color: #fff;
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     font-weight: 600;
-    text-align: center;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+label.control-label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #333;
 }
 
+.form-control {
+    border-radius: 6px;
+    box-shadow: none;
+    border: 1px solid #ced4da;
+    transition: border-color 0.3s;
+}
+
+    .form-control:focus {
+        border-color: #5492ed;
+        box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #5492ed33;
+    }
+
+.btn-primary,
 .btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
+    background-color: #5492ed !important;
+    border-color: #5492ed !important;
+    font-weight: 500;
+}
+
+    .btn-primary:hover,
+    .btn-success:hover {
+        background-color: #3f7ad9 !important;
+        border-color: #3f7ad9 !important;
+    }
+
+.btn:focus {
+    box-shadow: 0 0 0 0.25rem rgba(84, 146, 237, 0.5);
+}
+
+.modal-content {
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+.modal-header {
+    background-color: #5492ed;
+    color: #fff;
+    font-weight: 600;
+    border-bottom: none;
+}
+
+.modal-body {
+    color: #333;
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+#otpLoading i {
+    font-size: 1rem;
+    color: #fff;
+}
+.text-danger {
+    font-size: 0.875rem;
+    margin-top: 4px;
 }
